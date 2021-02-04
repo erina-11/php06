@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>リアルタイム検索型todoリスト</title>
+</head>
+
+<body>
+  <fieldset>
+    <legend>リアルタイム検索型todoリスト</legend>
+    <a href="ajax_input.php">入力画面</a>
+    <div>
+      検索フォーム：<input type="text" id="search">
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>deadline</th>
+          <th>todo</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- ここに<tr><td>deadline</td><td>todo</td><tr>の形でデータが入る -->
+      </tbody>
+    </table>
+  </fieldset>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    $('#search').on('keyup', function () {
+      console.log($(this).val());
+      const serchWord = $(this).val();
+      const requestUrl = 'ajax_get.php'; // リクエスト送信先のファイル
+      // phpへリクエストを送って結果を出力する処理
+      axios.get(`${requestUrl}?serchword=${serchWord}`) // リクエスト送信
+        .then(function (response) {
+          console.log(response); // responseにPHPから送られたデータが入る
+          // 今回はconsoleでデータが出てくればOK．
+          // できる人はここにブラウザに表示する処理を書こう！
+        })
+        .catch(function (error) {
+          console.log(error);
+        })
+        .finally();
+    });
+  </script>
+
+  <!-- ここから嶋田さんがslackに共有してくれたコード -->
+  <!-- <script>
+    //まずページを読み込んだらtodoリストの全てのリストを表示させる
+    $(document).ready(function () {
+      // console.log($(this).val()); // inputの内容をリアルタイムに取得
+      const serchWord = $(this).val();
+      const requestUrl = 'ajax_get.php'; // リクエスト送信先のファイル
+      // phpへリクエストを送って結果を出力する処理
+      axios.get(`${requestUrl}?serchword=${serchWord}`) // リクエスト送信
+        .then(function (response) {
+          // console.log(response); // responseにPHPから送られたデータが入る
+          //#textにtodoテーブルのtodoのデータをinsertAdjacentHTMLで表示させる
+          response.data.forEach(res => {
+            document.getElementById('text').insertAdjacentHTML('beforeend', `<p>${res.todo}</p>`);
+          });
+        })
+        .catch(function (error) { })
+        .finally(function () { });
+    });
+    //次に#searchに入力されるたびにデータの表示を変える処理自体はうえとほぼ同じ
+    $('#search').on('keyup', function () {
+      // console.log($(this).val()); // inputの内容をリアルタイムに取得
+      const serchWord = $(this).val();
+      const requestUrl = 'ajax_get.php'; // リクエスト送信先のファイル
+      // phpへリクエストを送って結果を出力する処理
+      axios.get(`${requestUrl}?serchword=${serchWord}`) // リクエスト送信
+        .then(function (response) {
+          // console.log(response); // responseにPHPから送られたデータが入る
+          //入力のたびに一度空にする
+          $('#text').html('');
+          response.data.forEach(res => {
+            document.getElementById('text').insertAdjacentHTML('beforeend', `<p>${res.todo}</p>`);
+          });
+        })
+        .catch(function (error) { })
+        .finally(function () { });
+    });
+  </script> -->
+</body>
+
+</html>
